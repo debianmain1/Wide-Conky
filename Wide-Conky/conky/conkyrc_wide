@@ -1,0 +1,118 @@
+conky.config = {
+  -- -- Conky settings -- #
+	    background = false,
+	    update_interval = 1,
+
+	    cpu_avg_samples = 2,
+	    net_avg_samples = 2,
+
+	    override_utf8_locale = true,
+
+	    double_buffer = true,
+	    no_buffers = true,
+
+      text_buffer_size = 32768,
+      imlib_cache_size = 0,
+
+  -- -- Colors
+
+  		color0 = '3b31b6',
+  		color1 = '5b31b6',
+  		color2 = '7b31b6',
+  		color3 = '9b31b6',
+
+-- Window specifications #
+	own_window = true,
+        own_window_type = 'desktop',
+	own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+	own_window_title = '',
+	own_window_transparent=true,
+	own_window_argb_visual = true,
+	own_window_argb_value = 200,
+
+	    border_inner_margin = 50,
+	    border_outer_margin = 0,
+
+	    alignment = 'top_right',
+	    gap_x = 0,
+	    gap_y = 30,
+
+  -- -- Graphics settings -- #
+	    draw_shades = false,
+	    draw_outline = false,
+	    draw_borders = false,
+	    draw_graph_borders = false,
+
+  -- -- Text settings -- #
+	    use_xft = true,
+	    font = 'FederationBold:size=9',
+	    xftalpha = 0.8,
+	    top_name_width = 10,
+
+	    default_color = '#FFFFFF',
+
+	    minimum_width = 360, minimum_height = 1080,
+	    maximum_width = 360,
+
+      --CORRECT THIS PATH IF NEEDED
+      lua_load = '~/.conky/wide.lua',
+      lua_draw_hook_pre = 'conky_rings',
+};
+
+conky.text = [[
+${font FederationBold:size=18}${color3}SYSTEM${font}${color #FFFFFF}
+  ${goto 60}${exec cat /etc/issue.net}
+  ${goto 60}${execi 1000 cat /proc/cpuinfo | grep 'model name'|sed -e 's/model name.*: //'| uniq | cut -c 1-32}
+  ${goto 60}$kernel${voffset 3}
+  ${goto 60}${freq_g 4} GHz${voffset 3}
+  ${goto 60}${uptime} UPTIME${voffset 3}
+  ${goto 60}${execi 360 aptitude search "~U" | wc -l | tail}  UPDATES
+${hr 2}
+${font FederationBold:size=12}${color0}TEMPS & LOADS${voffset 2}${color}
+  ${offset  55}${voffset 65}${font FederationBold:size=12}CPU
+  ${font}${voffset 35}
+  ${offset  190}${color0}${exec sensors | grep -o 'Core 0:        +[0-9].' | sed -r 's/0:|[^0-9]//g'}°
+  ${offset  225}${voffset -13}${color1}${exec sensors | grep -o 'Core 1:        +[0-9].' | sed -r 's/1:|[^0-9]//g'}°
+  ${offset  260}${voffset -13}${color2}${exec sensors | grep -o 'Core 2:        +[0-9].' | sed -r 's/2:|[^0-9]//g'}°
+  ${offset  295}${voffset -13}${color3}${exec sensors | grep -o 'Core 3:        +[0-9].' | sed -r 's/3:|[^0-9]//g'}°
+${voffset 10}
+  ${goto 60}Name ${goto 180}Pid${goto 270}Cpu %${goto 345}Mem %${color}
+  ${goto 60}${top name 1} ${goto 175}${top pid 1}${goto 260}${top cpu 1}${goto 340}${top mem 1}
+  ${goto 60}${top name 2} ${goto 175}${top pid 2}${goto 260}${top cpu 2}${goto 340}${top mem 2}
+  ${goto 60}${top name 3} ${goto 175}${top pid 3}${goto 260}${top cpu 3}${goto 340}${top mem 3}
+  ${goto 60}${top name 4} ${goto 175}${top pid 4}${goto 260}${top cpu 4}${goto 340}${top mem 4}
+  ${goto 60}${top name 5} ${goto 175}${top pid 5}${goto 260}${top cpu 5}${goto 340}${top mem 5}
+${hr 2}
+${font FederationBold:size=12}${color0}GPU1  ${color #FFFFFF}${font}${exec nvidia-settings -t -q [gpu:0]/GPUCoreTemp}°  ${font FederationBold:size=12}${goto 270}${voffset -4}${color0}GPU2  ${color #FFFFFF}${font}${exec nvidia-settings -t -q [gpu:1]/GPUCoreTemp}°
+${font FederationBold:size=12}${color0}${voffset 5}RAM  ${color #FFFFFF}${font}$mem/$memmax${color cccccc} ($memperc%)
+${hr 2}
+${font FederationBold:size=12}${color0}STORAGE${color #FFFFFF}${font}
+  ${goto 60}${exec df -h | grep "/dev/sda1" | awk '{ printf "%s of %s \t %s\n", $5, $2, $6 }' }
+  ${goto 60}${exec df -h | grep "/dev/sda2" | awk '{ printf "%s of %s \t %s\n", $5, $2, $6 }' }
+  ${goto 60}${exec df -h | grep "/dev/sdb1" | awk '{ printf "%s of %s \t %s\n", $5, $2, $6 }' }
+  ${goto 60}${exec df -h | grep "/dev/sdb2" | awk '{ printf "%s of %s \t %s\n", $5, $2, $6 }' }
+  ${goto 60}${exec df -h | grep "/dev/sdc2" | awk '{ printf "%s of %s \t %s\n", $5, $2, $6 }' }
+${voffset -10}
+${font FederationBold:size=12}${color0}HDD1  ${color #FFFFFF}${font}${hddtemp /dev/sda} °C${goto 270}${font FederationBold:size=12}${color0}HDD2  ${color #FFFFFF}${font}${hddtemp /dev/sdb} °C 
+${font FederationBold:size=12}${color0}HDD3  ${color #FFFFFF}${font}${hddtemp /dev/sdc} °C${voffset -4}${goto 270}${font FederationBold:size=12}${color0}HDD4  ${color #FFFFFF}${font}${hddtemp /dev/sdd} °C
+${hr 2}
+${font FederationBold:size=12}${color0}DOWN  ${color #FFFFFF}${font}${downspeed bond0}
+  ${downspeedgraph bond0 40,300 FFFFFF 3b31b6}${color #FFFFFF}
+${font FederationBold:size=12}${color3}UP  ${color #FFFFFF}${font}${downspeed bond0}
+  ${upspeedgraph   bond0 40,300 FFFFFF 9b31b6}${color #FFFFFF}
+${font FederationBold:size=12}${color0}TOTAL DOWN${goto 220}${color #FFFFFF}${font}${totaldown bond0}
+${font FederationBold:size=12}${color3}TOTAL UP${goto 220}${color #FFFFFF}${font}${totalup bond0}
+${hr 2}
+${font FederationBold:size=12}${color0}NETWORK${color #FFFFFF}${font}${voffset 8}
+  ${goto 60}PUBLIC IP${goto 145}${execi 3600 wget -q -O - checkip.dyndns.org | sed -e 's/[^[:digit:]\|.]//g'}
+  ${goto 60}LAN${goto 145}${addr bond0}
+  ${goto 60}INBOUND PORTS${goto 225}${tcp_portmon 1 32767 count}
+  ${goto 60}OUTBOUND PORTS${goto 225}${tcp_portmon 32768 61000 count}
+  ${goto 60}IP${goto 100}${tcp_portmon 1 65535 rip  0}
+  ${goto 100}${tcp_portmon 1 65535 rip  1}
+  ${goto 100}${tcp_portmon 1 65535 rip  2}
+  ${goto 100}${tcp_portmon 1 65535 rip  3}
+  ${goto 100}${tcp_portmon 1 65535 rip  4}
+  ${goto 100}${tcp_portmon 1 65535 rip  5}
+${hr 2}
+]];
